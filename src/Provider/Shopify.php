@@ -9,17 +9,18 @@ use Psr\Http\Message\ResponseInterface;
 
 class Shopify extends AbstractProvider
 {
-
     const ACCESS_TOKEN_RESOURCE_OWNER_ID = 'id';
 
     /**
      * @var string This will be prepended to the base uri.
+     *
      * @link https://help.shopify.com/api/guides/authentication/oauth#asking-for-permission
      */
     protected $shop;
 
     /**
      * @var string If set, this will be sent to shopify as the "per-user" parameter.
+     *
      * @link https://help.shopify.com/api/guides/authentication/oauth#asking-for-permission
      */
     protected $accessType;
@@ -45,7 +46,7 @@ class Shopify extends AbstractProvider
         $params = array_merge(
             parent::getAuthorizationParameters($options),
             array_filter([
-                'option' => $option
+                'option' => $option,
             ])
         );
 
@@ -88,11 +89,12 @@ class Shopify extends AbstractProvider
      * No default is provided, providers must overload this method to activate
      * authorization headers.
      *
-     * @param  mixed|null $token Either a string or an access token instance
+     * @param mixed|null $token Either a string or an access token instance
+     *
      * @return array
      */
     public function getAuthorizationHeaders($token = null)
     {
-        return array('X-Shopify-Access-Token' => $token->getToken());
+        return ['X-Shopify-Access-Token' => $token->getToken()];
     }
 }
