@@ -2,9 +2,8 @@
 
 namespace Multidimensional\OAuth2\Client\Test\Provider;
 
-use Multidimensional\OAuth2\Client\Provider\Shopify as ShopifyProvider;
-
 use Mockery as m;
+use Multidimensional\OAuth2\Client\Provider\Shopify as ShopifyProvider;
 
 class ShopifyTest extends \PHPUnit_Framework_TestCase
 {
@@ -13,11 +12,11 @@ class ShopifyTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->provider = new ShopifyProvider([
-            'clientId' => 'mock_client_id',
+            'clientId'     => 'mock_client_id',
             'clientSecret' => 'mock_secret',
-            'redirectUri' => 'none',
-            'shop' => 'mock_domain',
-            'accessType' => 'online'
+            'redirectUri'  => 'none',
+            'shop'         => 'mock_domain',
+            'accessType'   => 'online',
         ]);
     }
 
@@ -64,7 +63,6 @@ class ShopifyTest extends \PHPUnit_Framework_TestCase
         $parameters = $this->provider->getAuthorizationParameters([]);
 
         $this->assertEquals('per-user', $parameters['option']);
-
     }
 
     public function testAuthorizationParameters()
@@ -76,7 +74,6 @@ class ShopifyTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals('/admin/shop.json', $uri['path']);
         $this->assertNotContains('mock_access_token', $url);
-
     }
 
     public function testDefaultScopes()
@@ -85,7 +82,6 @@ class ShopifyTest extends \PHPUnit_Framework_TestCase
 
         $this->assertContains('read_content', $scopes);
         $this->assertContains('read_products', $scopes);
-
     }
 
     public function testScopeSeparator()
@@ -93,24 +89,24 @@ class ShopifyTest extends \PHPUnit_Framework_TestCase
         $separator = $this->provider->getScopeSeparator();
 
         $this->assertEquals(',', $separator);
-
     }
 
-    public function testcheckResponse() {
+    public function testcheckResponse()
+    {
         $postResponse = m::mock('Psr\Http\Message\ResponseInterface');
         $postResponse->shouldReceive('getBody')->andReturn('{"shop": { "id": 12345, "name": "mock_name", "email": "mock_email", "domain": "mock_store.myshopify.com"}}');
         $postResponse->shouldReceive('getHeader')->andReturn(['content-type' => 'json']);
         $postResponse->shouldReceive('getStatusCode')->andReturn(200);
-        
-        $checkedresponse = $this->provider->checkResponse($postResponse, '{"shop": { "id": 12345, "name": "mock_name", "email": "mock_email", "domain": "mock_store.myshopify.com"}}');
 
+        $checkedresponse = $this->provider->checkResponse($postResponse, '{"shop": { "id": 12345, "name": "mock_name", "email": "mock_email", "domain": "mock_store.myshopify.com"}}');
     }
 
     /**
      * @expectedException League\OAuth2\Client\Provider\Exception\IdentityProviderException
      **/
-    public function testcheckResponseException() {
-        $status = rand(400,500);
+    public function testcheckResponseException()
+    {
+        $status = rand(400, 500);
         $postResponse = m::mock('Psr\Http\Message\ResponseInterface');
         $postResponse->shouldReceive('getBody')->andReturn('{"errors":"[API] Invalid API key or access token (unrecognized login or wrong password)"}');
         $postResponse->shouldReceive('getHeader')->andReturn(['content-type' => 'json']);
@@ -123,7 +119,6 @@ class ShopifyTest extends \PHPUnit_Framework_TestCase
 
         $this->provider->setHttpClient($client);
         $token = $this->provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
-
     }
 
     public function testcreateResourceOwner()
@@ -208,7 +203,6 @@ class ShopifyTest extends \PHPUnit_Framework_TestCase
 
     public function testAuthorizationHeaders()
     {
-
         $token = m::mock('League\OAuth2\Client\Token\AccessToken', [['access_token' => 'mock_access_token']]);
 
         $token->shouldReceive('getToken')
@@ -219,6 +213,5 @@ class ShopifyTest extends \PHPUnit_Framework_TestCase
 
         $this->assertArrayHasKey('X-Shopify-Access-Token', $headers);
         $this->assertEquals('mock_token', $headers['X-Shopify-Access-Token']);
-
     }
 }
